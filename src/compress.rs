@@ -1,5 +1,6 @@
 use std::fs::{self, File};
-use std::io::{self, BufReader, BufWriter, Read, Write};
+use std::io::{self, BufReader, BufWriter};
+use std::io::Write;
 use anyhow::{Context, Result};
 use zstd::stream::Encoder;
 

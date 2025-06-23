@@ -18,6 +18,7 @@ crc32fast = "*"
 indicatif = "*"
 dialoguer = "*"
 zstd = "*"
+textwrap = "0.16"
 
 [dev-dependencies]
 criterion = "*"
