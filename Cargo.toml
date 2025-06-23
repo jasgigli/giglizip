@@ -1,11 +1,11 @@
 [package]
 name = "giglizip"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 authors = ["Junaid Ali Shah Gigli (overview.jjj@gmail.com)"]
 description = "A fast, multi-algorithm compression CLI and library."
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/jasgigli/GigliZip"
+repository = "https://github.com/jasgigli/giglizip"
 
 [dependencies]
 zstd-safe = "*"
