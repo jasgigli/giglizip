@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            ext: tar.gz
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
+            ext: zip
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            ext: tar.gz
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+      - name: Package
+        run: |
+          mkdir dist
+          if [ "${{ matrix.ext }}" = "zip" ]; then
+            cp target/${{ matrix.target }}/release/giglizip-compress.exe dist/
+            7z a giglizip-compress-${{ github.ref_name }}-${{ matrix.target }}.zip dist/giglizip-compress.exe
+          else
+            cp target/${{ matrix.target }}/release/giglizip-compress dist/
+            tar czf giglizip-compress-${{ github.ref_name }}-${{ matrix.target }}.tar.gz -C dist giglizip-compress
+          fi
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: giglizip-compress-*.${{ matrix.ext }}
