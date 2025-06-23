@@ -6,6 +6,9 @@ use indicatif::{ProgressBar, ProgressStyle};
 use dialoguer::{Input, Select};
 use std::env;
 
+use giglizip::compress;
+use giglizip::decompress;
+
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Cli {
@@ -55,38 +58,38 @@ fn main() -> Result<()> {
     }
     let input = cli.input.clone().expect("Input is required");
     let output = cli.output.clone().expect("Output is required");
-    let metadata = fs::metadata(&input)
-        .with_context(|| format!("Failed to stat input file: {}", input))?;
-    let pb = ProgressBar::new(metadata.len());
-    pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
-        .unwrap()
-        .progress_chars("#>-"));
-    let mut input_file = fs::File::open(&input)
-        .with_context(|| format!("Failed to open input file: {}", input))?;
-    let mut input_data = Vec::with_capacity(metadata.len() as usize);
-    let mut buf = [0u8; 8192];
-    loop {
-        let n = input_file.read(&mut buf)?;
-        if n == 0 { break; }
-        input_data.extend_from_slice(&buf[..n]);
-        pb.inc(n as u64);
-    }
-    pb.finish_with_message("Read complete");
-    let pb2 = ProgressBar::new(input_data.len() as u64);
-    pb2.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.magenta/blue}] {bytes}/{total_bytes} ({eta}) compressing...")
-        .unwrap()
-        .progress_chars("#>-")
-    );
-    let output_data = if cli.decompress {
-        giglizip_compress::decompress(&input_data)
+    if cli.decompress {
+        match decompress::decompress_file(&input, &output) {
+            Ok((comp_size, orig_size)) => {
+                println!(
+                    "Decompressed: {} → {} ({} bytes → {} bytes)",
+                    input, output, comp_size, orig_size
+                );
+            },
+            Err(e) => {
+                eprintln!("[ERROR] Decompression failed: {}", e);
+                std::process::exit(1);
+            }
+        }
     } else {
-        giglizip_compress::compress(&input_data)
-    };
-    pb2.finish_with_message("Done");
-    let mut out = fs::File::create(&output)
-        .with_context(|| format!("Failed to create output file: {}", output))?;
-    out.write_all(&output_data).context("Failed to write output file")?;
+        match compress::compress_file(&input, &output, cli.level as i32) {
+            Ok((orig_size, comp_size)) => {
+                if comp_size >= orig_size {
+                    println!("[WARN] Compression ineffective: output is not smaller than input");
+                }
+                let ratio = if orig_size > 0 {
+                    100.0 * (1.0 - (comp_size as f64 / orig_size as f64))
+                } else { 0.0 };
+                println!(
+                    "Original: {} bytes, Compressed: {} bytes ({:.2}% reduction)",
+                    orig_size, comp_size, ratio
+                );
+            },
+            Err(e) => {
+                eprintln!("[ERROR] Compression failed: {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
     Ok(())
 }

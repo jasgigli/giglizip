@@ -17,6 +17,7 @@ anyhow = "*"
 crc32fast = "*"
 indicatif = "*"
 dialoguer = "*"
+zstd = "*"
 
 [dev-dependencies]
 criterion = "*"

@@ -108,7 +108,7 @@ target/release/giglizip.exe
 ## 👤 Author
 
 **JasGigli**
-🔗 [JasGigli](junaidalishah.vercel.app)
+🔗 [JasGigli](https://junaidalishah.vercel.app)
 💻 [JasGigli](https://github.com/jasgigli)
 
 ---
