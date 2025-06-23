@@ -1,11 +1,11 @@
 [package]
-name = "giglizip-compress"
-version = "0.1.0"
+name = "giglizip"
+version = "1.0.0"
 edition = "2021"
-authors = ["Your Name <you@example.com>"]
+authors = ["Junaid Ali Shah Gigli (overview.jjj@gmail.com)"]
 description = "A fast, multi-algorithm compression CLI and library."
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/your/repo"
+repository = "https://github.com/jasgigli/GigliZip"
 
 [dependencies]
 zstd-safe = "*"
@@ -13,6 +13,10 @@ lz4 = "*"
 fse = "*"
 rayon = { version = "*", optional = true }
 clap = { version = "4", features = ["derive"] }
+anyhow = "*"
+crc32fast = "*"
+indicatif = "*"
+dialoguer = "*"
 
 [dev-dependencies]
 criterion = "*"
