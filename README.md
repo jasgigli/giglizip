@@ -25,7 +25,12 @@
 
 Download the latest installer for your platform:
 
-- 🪟 **[Download for Windows (.exe)](https://github.com/jasgigli/giglizip/releases/latest/download/giglizip-setup.exe)**
+
+
+
+
+
+- 🪟 **[Download GigliZip v2.0 for Windows (.exe)](https://github.com/jasgigli/giglizip/releases/latest)**
 - 🍎 **[Download for macOS (Coming Soon)]()**
 - 🐧 **[Download for Linux (Coming Soon)]()**
 
